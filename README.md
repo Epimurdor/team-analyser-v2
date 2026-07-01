@@ -52,7 +52,7 @@ Un logiciel **pour usage personnel uniquement** pour analyser les matchs de **Le
 2. **Entrer le tag** (ex: `KR1` ou `EUW`).
    - Le tag est généralement **3-5 caractères** (ex: `EUW1`, `KR1`, `NA1`).
    - Pour trouver ton tag, va sur ton profil League of Legends ou sur [op.gg](https://op.gg/).
-3. **Cliquer sur "Rechercher l'historique"** pour voir les **20 derniers matchs** du joueur.
+3. **Cliquer sur "Rechercher l'historique"** pour voir les **5 derniers matchs** du joueur.
 4. **Double-cliquer sur un match** dans l'historique pour afficher ses stats détaillées.
 
 ### Où trouver l'ID d'un match ou le tag ?
@@ -72,7 +72,7 @@ Un logiciel **pour usage personnel uniquement** pour analyser les matchs de **Le
 ## 📊 Fonctionnalités
 
 - ✅ **Recherche par ID de match** : Entre l'ID et récupère toutes les stats.
-- ✅ **Recherche par pseudo + tag** : Récupère les **20 derniers matchs** du joueur.
+- ✅ **Recherche par pseudo + tag** : Récupère les **5 derniers matchs** du joueur.
 - ✅ **Région fixée sur EUW1** : Pas besoin de sélectionner la région.
 - ✅ **Affichage des joueurs** : Noms, champions, niveau, K/D/A, KDA, Gold, CS, Vision.
 - ✅ **Indication victoire/défaite** : ✅ Oui / ❌ Non.

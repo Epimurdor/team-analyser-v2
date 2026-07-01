@@ -50,7 +50,7 @@ def get_puuid_by_summoner_name(summoner_name):
         return None
 
 # --- Récupérer l'historique des matchs d'un joueur ---
-def get_match_history(puuid, count=20):
+def get_match_history(puuid, count=5):
     url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count={count}"
     headers = {"X-Riot-Token": RIOT_API_KEY}
     try:
@@ -330,7 +330,7 @@ class TeamAnalyserApp:
         self.current_puuid = puuid
 
         # Récupérer l'historique des matchs
-        match_ids = get_match_history(puuid, count=20)
+        match_ids = get_match_history(puuid, count=5)
         if not match_ids:
             self.root.config(cursor="")
             self.details_label.config(text="Aucun match trouvé pour ce joueur.")
@@ -378,7 +378,7 @@ class TeamAnalyserApp:
                     ), iid=match_id)
 
         self.root.config(cursor="")
-        self.details_label.config(text=f"Historique de {summoner_name}#{summoner_tag} (20 derniers matchs)")
+        self.details_label.config(text=f"Historique de {summoner_name}#{summoner_tag} (5 derniers matchs)")
 
     def load_match_from_history(self, event):
         selected_item = self.history_tree.selection()
