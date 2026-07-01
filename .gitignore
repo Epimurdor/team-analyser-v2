@@ -1,0 +1,22 @@
+# Ignorer les fichiers de configuration locaux
+config.ini
+
+# Ignorer les fichiers générés par PyInstaller
+build/
+dist/
+*.spec
+
+# Ignorer les fichiers Python compilés
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignorer les fichiers IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignorer les fichiers système
+.DS_Store
+Thumbs.db
