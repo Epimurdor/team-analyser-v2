@@ -1,23 +1,22 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import requests
-import configparser
-import os
 import webbrowser
-from datetime import datetime
 
 # --- Configuration ---
 # ⚠️ CLÉ API RIOT POUR USAGE PERSONNEL UNIQUEMENT
+# ⚠️ RÉGION FIXÉE SUR EUW1 (Europe de l'Ouest)
 # NE PAS PARTAGER CE FICHIER OU LE .EXE GÉNÉRÉ !
 RIOT_API_KEY = "RGAPI-cc19da24-8034-4cc4-b3fb-d3c215d905e6"
-RIOT_API_BASE = "https://{region}.api.riotgames.com"
+RIOT_REGION = "euw1"  # Région fixée sur EUW1
+RIOT_API_BASE = f"https://{RIOT_REGION}.api.riotgames.com"
 
 # Cache pour éviter de refaire des requêtes pour les mêmes PUUIDs
 summoner_name_cache = {}
 
 # --- Récupérer les infos d'un match ---
-def get_match_info(match_id, region="euw1"):
-    url = f"{RIOT_API_BASE.format(region=region)}/lol/match/v5/matches/{match_id}"
+def get_match_info(match_id):
+    url = f"{RIOT_API_BASE}/lol/match/v5/matches/{match_id}"
     headers = {"X-Riot-Token": RIOT_API_KEY}
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -28,11 +27,11 @@ def get_match_info(match_id, region="euw1"):
         return None
 
 # --- Récupérer le nom du joueur depuis son PUUID (avec cache) ---
-def get_summoner_name(puuid, region="euw1"):
+def get_summoner_name(puuid):
     if puuid in summoner_name_cache:
         return summoner_name_cache[puuid]
     
-    url = f"{RIOT_API_BASE.format(region=region)}/lol/summoner/v4/summoners/by-puuid/{puuid}"
+    url = f"{RIOT_API_BASE}/lol/summoner/v4/summoners/by-puuid/{puuid}"
     headers = {"X-Riot-Token": RIOT_API_KEY}
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -44,7 +43,7 @@ def get_summoner_name(puuid, region="euw1"):
         return "Inconnu"
 
 # --- Analyser le match et extraire les stats ---
-def analyze_match(match_data, region="euw1"):
+def analyze_match(match_data):
     if not match_data:
         return []
 
@@ -54,7 +53,7 @@ def analyze_match(match_data, region="euw1"):
     stats = []
     for participant in participants:
         puuid = participant.get("puuid")
-        summoner_name = get_summoner_name(puuid, region)
+        summoner_name = get_summoner_name(puuid)
 
         stats.append({
             "summonerName": summoner_name,
@@ -79,13 +78,12 @@ def analyze_match(match_data, region="euw1"):
 class TeamAnalyserApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("🎮 Team Analyser v2 - League of Legends (Usage Personnel)")
+        self.root.title(f"🎮 Team Analyser v2 - League of Legends (EUW1)")
         self.root.geometry("1200x700")
         self.root.resizable(True, True)
 
         # Variables
         self.match_id = tk.StringVar()
-        self.region = tk.StringVar(value="euw1")
         self.stats = []
 
         # --- UI ---
@@ -93,25 +91,19 @@ class TeamAnalyserApp:
 
     def create_widgets(self):
         # Frame pour la recherche
-        search_frame = ttk.LabelFrame(self.root, text="🔍 Rechercher un match", padding=10)
+        search_frame = ttk.LabelFrame(self.root, text="🔍 Rechercher un match (Région: EUW1)", padding=10)
         search_frame.pack(fill=tk.X, padx=10, pady=5)
 
         ttk.Label(search_frame, text="ID du match :").grid(row=0, column=0, sticky=tk.W)
         ttk.Entry(search_frame, textvariable=self.match_id, width=50).grid(row=0, column=1, padx=5)
-        
-        # Région
-        ttk.Label(search_frame, text="Région :").grid(row=0, column=2, sticky=tk.W)
-        regions = ["euw1", "eun1", "na1", "br1", "la1", "la2", "oc1", "jp1", "kr", "ru"]
-        ttk.Combobox(search_frame, textvariable=self.region, values=regions, width=8).grid(row=0, column=3, padx=5, sticky=tk.W)
-        
-        ttk.Button(search_frame, text="Analyser", command=self.fetch_match).grid(row=0, column=4, padx=5)
+        ttk.Button(search_frame, text="Analyser", command=self.fetch_match).grid(row=0, column=2, padx=5)
 
         # Avertissement
         warning_frame = ttk.Frame(self.root)
         warning_frame.pack(fill=tk.X, padx=10, pady=2)
         ttk.Label(
             warning_frame,
-            text="⚠️ Ce logiciel utilise une clé API personnelle. NE PAS PARTAGER le .exe ou le code !",
+            text="⚠️ Ce logiciel utilise une clé API personnelle (Région: EUW1). NE PAS PARTAGER le .exe ou le code !",
             foreground="red",
             font=("Arial", 9, "bold")
         ).pack()
@@ -187,7 +179,6 @@ class TeamAnalyserApp:
 
     def fetch_match(self):
         match_id = self.match_id.get().strip()
-        region = self.region.get().strip()
 
         if not match_id:
             messagebox.showerror("Erreur", "Veuillez entrer un ID de match.")
@@ -200,9 +191,9 @@ class TeamAnalyserApp:
 
         # Récupérer les données du match
         self.root.config(cursor="wait")
-        match_data = get_match_info(match_id, region)
+        match_data = get_match_info(match_id)
         if match_data:
-            stats = analyze_match(match_data, region)
+            stats = analyze_match(match_data)
             self.display_stats(stats, match_data)
         self.root.config(cursor="")
 
